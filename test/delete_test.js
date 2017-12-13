@@ -11,43 +11,33 @@ describe('Deleting a user', () => {
             .then(() => done());
     });
 
-    it('model instance remove', (done) => {
-        // remove a single instance of a user
-        john.remove()
+    function assertion(operation, done) {
+        operation
             .then(() => User.findOne({ name: 'John Doe' }))
             .then((user) => {
                 assert(user === null);
                 done();
             });
+    }
+
+    it('model instance remove', (done) => {
+        // remove a single instance of a user
+        assertion(john.remove(), done);
     });
 
     it('model class method remove', (done) => {
         // remove a number of records that meet a certain criteria
-        User.remove({ name: 'John Doe'})
-            .then(() => User.findOne({ name: 'John Doe' }))
-            .then((user) => {
-                assert(user === null);
-                done();
-            });
+        assertion(User.remove({ name: 'John Doe'}), done);
     });
 
     it('model class method findOneAndRemove', (done) => {
         // finds and removes the first record matching a certain criteria
-        User.findOneAndRemove({ name: 'John Doe' })
-            .then(() => User.findOne({ name: 'John Doe' }))
-            .then((user) => {
-                assert(user === null);
-                done();
-            });
+       assertion(User.findOneAndRemove({ name: 'John Doe' }), done);
     });
 
     it('model class method findByIdAndRemove', (done) => {
-        User.findByIdAndRemove(john._id)
-            .then(() => User.findOne({ name: 'John Doe' }))
-            .then((user) => {
-                assert(user === null);
-                done();
-            });
+        // removes a user by their _id 
+        assertion(User.findByIdAndRemove(john._id), done);
     });
     
 });
