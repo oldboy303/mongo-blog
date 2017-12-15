@@ -11,11 +11,17 @@ const UserSchema = new Schema({
     },
     required: [true, 'Name is required.']
   },
-    postCount: Number,
-    posts: [PostSchema]
+    posts: [PostSchema],
+    likes: Number
 },
 {
   usePushEach: true
+});
+
+// in the getter that follows, we need to use a regular function declaration rather than
+// a fat arrow function so that the scope of the 'this' keyword is bound to the User instance
+UserSchema.virtual('postCount').get(function() {
+  return this.posts.length;
 });
 
 const User = mongoose.model('User', UserSchema);

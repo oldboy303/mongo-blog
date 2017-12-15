@@ -6,7 +6,7 @@ describe('Updating records', () => {
   let john;
 
   beforeEach((done) => {
-    john = new User({ name: 'John Doe', postCount: 0 });
+    john = new User({ name: 'John Doe', likes: 0 });
     john.save()
       .then(() => done());
   });
@@ -58,10 +58,10 @@ describe('Updating records', () => {
 
   it('A user can have their postCount incremented by 1', (done) => {
     // using mongoose $inc operator
-    User.update({ name: 'John Doe' }, { $inc: { postCount: 1 } })
+    User.update({ name: 'John Doe' }, { $inc: { likes: 1 } })
       .then(() => User.findOne({ name: 'John Doe' }))
       .then((user) => {
-        assert(user.postCount === 1);
+        assert(user.likes === 1);
         done();
       }); 
     });
