@@ -19,11 +19,18 @@ const UserSchema = new Schema({
   usePushEach: true
 });
 
-// in the getter that follows, we need to use a regular function declaration rather than
-// a fat arrow function so that the scope of the 'this' keyword is bound to the User instance
 UserSchema.virtual('postCount').get(function() {
+  // using a regular funciton declaration so that 'this' gets bound to the object
+  // returned from the constructor
   return this.posts.length;
 });
+
+UserSchema.pre('remove', function(next) {
+  // using regular function declaration for the same reason as above
+  const BlogPost = mongoose.model('blogPost');
+  BlogPost.remove({ _id: { $in: this.blogPosts } })
+    .then(() => next());
+})
 
 const User = mongoose.model('user', UserSchema);
 
