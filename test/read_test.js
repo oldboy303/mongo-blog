@@ -3,11 +3,15 @@ const User = require('../src/user');
 
 describe('Reads a record from the database', () => {
 
-  let john;
+  let john, jane, jim, joe;
 
   beforeEach((done) => {
     john = new User({ name: 'John Doe' });
-    john.save()
+    jane = new User({ name: 'Jane Doe' });
+    jim = new User({ name: 'Jim Doe' });
+    joe = new User({ name: 'Joe Doe' });
+    
+    Promise.all([john.save(), jane.save(), jim.save(), joe.save()])
       .then(() => done());
   });
 
@@ -23,6 +27,19 @@ describe('Reads a record from the database', () => {
     User.findOne({ _id: john._id })
       .then((user) => {
         assert(user.name === 'John Doe');
+        done();
+      });
+  });
+
+  it('can skip and limit the result set', (done) => {
+    User.find({})
+      .sort({ name: 1 })
+      .skip(1)
+      .limit(2)
+      .then((users) => {
+        assert(users.length === 2);
+        assert(users[0].name === 'Jim Doe');
+        assert(users[1].name === 'Joe Doe');
         done();
       });
   });
